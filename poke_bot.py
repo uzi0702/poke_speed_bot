@@ -8,12 +8,16 @@ __author__ = "uzi"
 __version__ = "0.0"
 __date__ = "2024/4/12 (created by 2024/4/12)"
 
+from email import message
 import math
+import re
+from unittest import result
 import discord
 import jaconv
 #import pokebase
 import requests
 import split_text
+import time
 import bot_token as token
 
 BASE_URL = "https://pokeapi.co/api/v2/"
@@ -27,7 +31,7 @@ class PokeClient(discord.Client):
 		PokeClientを初期化するメソッド
 		"""
 		super().__init__(*args, **options)
-		self.poke_dict = get_en_name_of_pokemon()
+		self.poke_dict = get_dict_id_of_pokemon()
 
 	async def on_ready(self):
 		"""
@@ -35,11 +39,14 @@ class PokeClient(discord.Client):
 		"""
 		print(f"Logged in as {self.user} ID {self.user.id}")
 		print("------")
+		#test()
 
 	async def on_message(self, message):
 		"""
 		メッセージを受け取り、返答するメソッド
 		"""
+		if message.author == self.user:
+			return
 		if message.content.startswith("!p"):
 			await message.channel.send("起動完了！\nポケモンの名前と速度(最速、準速、無振り、下降、最遅)を入力してください！")
 			while True:
@@ -49,10 +56,31 @@ class PokeClient(discord.Client):
 				ja_pokemon_name = jaconv.hira2kata(target_list[0])
 				pokemon_condition = target_list[1]
 				print(ja_pokemon_name+":"+target_list[1])
-				en_pokemon_name = self.poke_dict[ja_pokemon_name]
-				speed = get_num_of_speed(en_pokemon_name)
-				result = calc_speed(speed, pokemon_condition)
-				await message.channel.send(ja_pokemon_name+":"+pokemon_condition+":"+str(result))
+				try:
+					pokemon_id = self.poke_dict[ja_pokemon_name]
+					print("pokemon_id:"+pokemon_id)
+					speed = get_num_of_speed(pokemon_id)
+					print("speed:"+str(speed))
+					result = calc_speed(speed, pokemon_condition)
+					await message.channel.send(ja_pokemon_name+":"+pokemon_condition+":"+str(result))
+					await self.say_real_num_of_each_rank(result, message)
+				except KeyError:
+					await message.channel.send("入力失敗、正しい文字列を入力してください")
+
+	async def say_real_num_of_each_rank(self, result, message):
+		result_string = ""
+		dict_of_rank = {-6:1/4, -5:2/7, -4:1/3, -3:2/5, -2:1/2, -1:2/3, 0:1, 1:3/2, 2:2, 3:5/2, 4:3, 5:7/2, 6:4}
+		for key, value in dict_of_rank.items():
+			if key == 0:
+				continue
+			num = math.floor(result*value)
+			result_string = result_string + "{:+d}".format(key) + f" : {num}\n"
+		print(result_string)
+		await message.channel.send(result_string)
+
+def test():
+	poke_dict = get_dict_id_of_pokemon()
+	print(poke_dict)
 
 def calc_speed(speed, condition):
 	"""
@@ -101,11 +129,11 @@ def get_num_of_speed(name):
 		print("http response error")
 	return speed
 
-def get_en_name_of_pokemon():
+def get_dict_id_of_pokemon():
 	"""
 	ポケモンの日本語名と英語名を対応させている辞書を作成する関数
 	"""
-	with open("jp_en.txt","r", encoding="utf-8") as file:
+	with open("ja_2_id.txt","r", encoding="utf-8") as file:
 		l_strip = [s.rstrip() for s in file.readlines()]
 	result_dict = {}
 	for i in l_strip:
