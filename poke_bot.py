@@ -1,4 +1,4 @@
-# /bin/python #
+# !/usr/bin/env python #
 # -*- coding: utf-8 -*-
 
 """
@@ -13,7 +13,7 @@ from math import floor
 import discord
 from jaconv import hira2kata
 import requests
-import split_text
+from .split_text import split_text
 import bot_token as token
 
 BASE_URL = "https://pokeapi.co/api/v2/"
@@ -56,9 +56,12 @@ class PokeClient(discord.Client):
 				return m.channel == message.channel
 
 			while True:
+				#メッセージを受け取ってポケモン名と速さを取り出す
 				receive_message = await self.wait_for("message", check=check)
 				message_content = receive_message.content
-				target_list = split_text.split_text(message_content)
+				target_list = split_text(message_content)
+
+				#ポケモン名をカタカナに変換する
 				try:
 					ja_pokemon_name = hira2kata(target_list[0])
 					await self.check_except_pokemon(ja_pokemon_name, message)
@@ -67,7 +70,9 @@ class PokeClient(discord.Client):
 				except IndexError:
 					await message.channel.send("正しい文字を入力してください。")
 					continue
+
 				try:
+					#ポケモン名からidを辞書で取得する
 					pokemon_id = self.poke_dict[ja_pokemon_name]
 					print("pokemon_id:"+pokemon_id)
 					speed = get_num_of_speed(pokemon_id)
