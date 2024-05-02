@@ -1,4 +1,5 @@
 # /bin/python #
+# -*- coding: utf-8 -*-
 
 """
 特定のメッセージで応答状態にし、ポケモン名、速度（最速、準速など）を受け取ると、
@@ -10,8 +11,7 @@ __date__ = "2024/4/12 (created by 2024/4/12)"
 
 from math import floor
 import discord
-import jaconv
-#import pokebase
+from jaconv import hira2kata
 import requests
 import split_text
 import bot_token as token
@@ -60,7 +60,7 @@ class PokeClient(discord.Client):
 				message_content = receive_message.content
 				target_list = split_text.split_text(message_content)
 				try:
-					ja_pokemon_name = jaconv.hira2kata(target_list[0])
+					ja_pokemon_name = hira2kata(target_list[0])
 					await self.check_except_pokemon(ja_pokemon_name, message)
 					pokemon_condition = target_list[1]
 					print(ja_pokemon_name+":"+target_list[1])
