@@ -1,18 +1,6 @@
 ************* Module poke_bot
-poke_bot.py:43:28: W0621: Redefining name 'message' from outer scope (line 11) (redefined-outer-name)
-poke_bot.py:59:5: W0621: Redefining name 'result' from outer scope (line 14) (redefined-outer-name)
-poke_bot.py:65:1: C0116: Missing function or method docstring (missing-function-docstring)
-poke_bot.py:65:43: W0621: Redefining name 'result' from outer scope (line 14) (redefined-outer-name)
-poke_bot.py:65:51: W0621: Redefining name 'message' from outer scope (line 11) (redefined-outer-name)
-poke_bot.py:74:2: W0105: String statement has no effect (pointless-string-statement)
-poke_bot.py:65:51: W0613: Unused argument 'message' (unused-argument)
-poke_bot.py:94:1: W0621: Redefining name 'result' from outer scope (line 14) (redefined-outer-name)
-poke_bot.py:20:0: C0411: standard import "time" should be placed before third party imports "discord", "jaconv", "requests" and first party import "split_text"  (wrong-import-order)
-poke_bot.py:11:0: W0611: Unused message imported from email (unused-import)
-poke_bot.py:13:0: W0611: Unused import re (unused-import)
-poke_bot.py:14:0: W0611: Unused result imported from unittest (unused-import)
-poke_bot.py:20:0: W0611: Unused import time (unused-import)
+poke_bot.py:92:40: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
 
--------------------------------------------------------------------
-Your code has been rated at 8.65/10 (previous run: 10.00/10, -1.35)
+------------------------------------------------------------------
+Your code has been rated at 9.91/10 (previous run: 9.91/10, +0.00)
 
